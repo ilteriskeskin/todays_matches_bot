@@ -1,27 +1,32 @@
+import configs
 import requests
-from bs4 import BeautifulSoup
 
-# Web sitesinin URL'si
-url = 'https://www.nesine.com/iddaa/canli-skor/futbol'
+from datetime import datetime
+from test_data import TEST_RESPONSE_DATA
+from utils import tweet
 
-# HTTP GET isteği gönder
-response = requests.get(url)
 
-# İstek başarılı olduysa devam et
-if response.status_code == 200:
-    # BeautifulSoup kullanarak HTML içeriğini analiz et
-    soup = BeautifulSoup(response.text, 'html.parser')
+def run():
+    today = datetime.now()
+    today_str = today.strftime("%Y-%m-%d")
+    api_key = configs.FOOTBALL_DATA_API_KEY
+    api_uri = f"{configs.FOOTBALL_DATA_API_URL}from={today_str}&to={today_str}&APIkey={api_key}"
 
-    # class'ı "league-list-content" olan section etiketlerini bul
-    match_list_div = soup.find('div', class_='match-list futbol')
+    response = requests.get(api_uri, headers=configs.HEADERS)
 
-    # Her bir section etiketini yazdır
-    print(match_list_div.prettify())
+    if response['status_code'] == 200:
+        matches_data = response.json()
 
-    #for section in league_list_sections:
-        #print(section.prettify())
+        if not matches_data:
+            matches_data = TEST_RESPONSE_DATA
 
-else:
-    # İstek başarısız olduysa hata mesajını yazdır
-    print(f'Hata: {response.status_code}')
+        for match in matches_data:
+            tweet_text = f"{match['match_hometeam_name']} vs {match['match_awayteam_name']} - {match['match_time']}"
+            tweet.tweet(tweet_text=tweet_text)
 
+    else:
+        print(f'Hata: {response.status_code}')
+
+
+if __name__ == '__main__':
+    run()
