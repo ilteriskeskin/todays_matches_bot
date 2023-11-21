@@ -20,14 +20,7 @@ def tweet(tweet_text: str = ""):
 
         auth = OAuth1(consumer_key, consumer_secret, access_token, access_token_secret)
         tweet_url = 'https://api.twitter.com/2/tweets'
-        response = requests.post(
-            tweet_url,
-            json={
-                'text': tweet_text
-            },
-            headers=headers,
-            auth=auth
-        )
+        response = requests.post(tweet_url, json={'text': tweet_text}, headers=headers, auth=auth)
 
         if response.status_code == 201:
             print("Tweet successfully")

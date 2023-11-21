@@ -14,7 +14,7 @@ def run():
 
     response = requests.get(api_uri, headers=configs.HEADERS)
 
-    if response['status_code'] == 200:
+    if response.status_code == 200:
         matches_data = response.json()
 
         if not matches_data:
