@@ -1,5 +1,6 @@
 import os
 
+SECRET_KEY = os.environ.get('SECRET_KEY')
 FOOTBALL_DATA_API_KEY = os.environ.get('FOOTBALL_DATA_API_KEY')
 FOOTBALL_DATA_API_URL = os.environ.get('FOOTBALL_DATA_API_URL')
 X_CONSUMER_KEY = os.environ.get('X_CONSUMER_KEY')
